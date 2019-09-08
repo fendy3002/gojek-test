@@ -5,17 +5,17 @@ import parking_lot.app.anon.*;
 
 public class ParkingLot{
     public class AllocationResponse{
-        public AllocationResponse(int slot, Car car){
+        public AllocationResponse(Integer slot, Car car){
             this.slot = slot;
             this.car = car;
         }
-        public int slot;
+        public Integer slot;
         public Car car;
     }
 
-    public ParkingLot(int slot){
+    public ParkingLot(Integer slot){
         this.slot = slot;
-        for(int i = 1; i <= slot; i++){
+        for(Integer i = 1; i <= slot; i++){
             availableSlot.add(i);
         }
     }
@@ -23,9 +23,12 @@ public class ParkingLot{
     private List<Integer> availableSlot = new ArrayList<Integer>();
     private Map<Integer, Car> occupant = new HashMap<Integer, Car>();
 
-    private int slot;
-    public int getSlot(){
+    private Integer slot;
+    public Integer getSlot(){
         return this.slot;
+    }
+    public AllocationResponse insert(String registrationNo, String colour) throws FullSlotException{
+        return this.insert(new Car(registrationNo, colour));
     }
     public AllocationResponse insert(Car car) throws FullSlotException{
         if(availableSlot.size() > 0){
@@ -38,7 +41,7 @@ public class ParkingLot{
             throw new FullSlotException();
         }
     }
-    public AllocationResponse pop(int slot) throws SlotIsEmptyException{
+    public AllocationResponse remove(Integer slot) throws SlotIsEmptyException{
         if(!occupant.containsKey(slot)){
             throw new SlotIsEmptyException(slot);
         }
@@ -68,12 +71,12 @@ public class ParkingLot{
         >();
         validator.put("registration_number", new Validator<Car, String>(){
             public boolean compare(Car car, String term){
-                return car.getRegistrationNo() == term;
+                return car.getRegistrationNo().equals(term);
             }
         });
         validator.put("colour", new Validator<Car, String>(){
             public boolean compare(Car car, String term){
-                return car.getColour() == term;
+                return car.getColour().equals(term);
             }
         });
 
