@@ -1,40 +1,44 @@
 package parking_lot.app;
 import parking_lot.app.domainmodel.*;
+import parking_lot.app.repository.*;
 import parking_lot.app.exception.*;
 import java.util.*;
 
 public class InputParser{
-    private ParkingLot parkingLot;
+    private ParkingLotMemory parkingLot;
     
-    public ParkingLot getParkingLot(){
+    public ParkingLotMemory getParkingLot(){
         return this.parkingLot;
     };
-    public String parse(String input) throws FullSlotException, SlotIsEmptyException{
+    public String parse(String input) throws FullSlotException, SlotIsEmptyException, LotInitializedException{
         String[] parts = input.split(" ");
 
         if(parts[0].equals("create_parking_lot")){
+            if(this.parkingLot != null){
+                throw new LotInitializedException();
+            }
             Integer slot = Integer.parseInt(parts[1]);
-            this.parkingLot = new ParkingLot(slot);
+            this.parkingLot = new ParkingLotMemory(slot);
 
             return "Created a parking lot with " + slot.toString() + " slots";
         }
         else if(parts[0].equals("park")){
             String registrationNo = parts[1];
             String colour = parts[2];
-            ParkingLot.AllocationResponse response = this.parkingLot.insert(registrationNo, colour);
-            return "Allocated slot number: " + response.slot.toString();
+            ParkingLotRecord response = this.parkingLot.insert(registrationNo, colour);
+            return "Allocated slot number: " + response.getSlot().toString();
         }
         else if(parts[0].equals("leave")){
             Integer slot = Integer.parseInt(parts[1]);
-            ParkingLot.AllocationResponse response = this.parkingLot.remove(slot);
-            return "Slot number " + response.slot.toString() + " is free";
+            ParkingLotRecord response = this.parkingLot.remove(slot);
+            return "Slot number " + response.getSlot().toString() + " is free";
         }
         else if(parts[0].equals("status")){
-            ParkingLot.AllocationResponse[] response = this.parkingLot.status();
+            ParkingLotRecord[] response = this.parkingLot.status();
             String result = "Slot No.\tRegistration No\tColour";
-            for (ParkingLot.AllocationResponse each : response) {
+            for (ParkingLotRecord each : response) {
                 result += "\n";
-                result += each.slot.toString() + "\t" + each.car.getRegistrationNo() + "\t" + each.car.getColour();
+                result += each.getSlot().toString() + "\t" + each.getCar().getRegistrationNo() + "\t" + each.getCar().getColour();
             }
             return result;
         }
@@ -42,7 +46,7 @@ public class InputParser{
             String display = parts[0].substring(0, parts[0].indexOf("_for_"));
             String search = parts[0].substring(parts[0].indexOf("_for_") + 5);
 
-            ParkingLot.AllocationResponse[] response = null;
+            ParkingLotRecord[] response = null;
             if(search.equals("cars_with_colour")){
                 response = this.parkingLot.find("colour", parts[1]);
             }
@@ -55,13 +59,13 @@ public class InputParser{
             }
             List<String> result = new ArrayList<String>();
             if(display.equals("registration_numbers")){
-                for (ParkingLot.AllocationResponse each : response) {
-                    result.add(each.car.getRegistrationNo());
+                for (ParkingLotRecord each : response) {
+                    result.add(each.getCar().getRegistrationNo());
                 }
             }
             else if(display.contains("slot_number")){
-                for (ParkingLot.AllocationResponse each : response) {
-                    result.add(each.slot.toString());
+                for (ParkingLotRecord each : response) {
+                    result.add(each.getSlot().toString());
                 }
             }
             return String.join(", ", result);

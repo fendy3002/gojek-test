@@ -1,19 +1,11 @@
-package parking_lot.app.domainmodel;
+package parking_lot.app.repository;
 import java.util.*;
+import parking_lot.app.domainmodel.*;
 import parking_lot.app.exception.*;
 import parking_lot.app.anon.*;
 
-public class ParkingLot{
-    public class AllocationResponse{
-        public AllocationResponse(Integer slot, Car car){
-            this.slot = slot;
-            this.car = car;
-        }
-        public Integer slot;
-        public Car car;
-    }
-
-    public ParkingLot(Integer slot){
+public class ParkingLotMemory{
+    public ParkingLotMemory(Integer slot){
         this.slot = slot;
         for(Integer i = 1; i <= slot; i++){
             availableSlot.add(i);
@@ -27,21 +19,21 @@ public class ParkingLot{
     public Integer getSlot(){
         return this.slot;
     }
-    public AllocationResponse insert(String registrationNo, String colour) throws FullSlotException{
+    public ParkingLotRecord insert(String registrationNo, String colour) throws FullSlotException{
         return this.insert(new Car(registrationNo, colour));
     }
-    public AllocationResponse insert(Car car) throws FullSlotException{
+    public ParkingLotRecord insert(Car car) throws FullSlotException{
         if(availableSlot.size() > 0){
             Integer assignedSlot = availableSlot.get(0);
             occupant.put(assignedSlot, car);
             availableSlot.remove(0);
-            return new AllocationResponse(assignedSlot, car);
+            return new ParkingLotRecord(assignedSlot, car);
         }
         else{
             throw new FullSlotException();
         }
     }
-    public AllocationResponse remove(Integer slot) throws SlotIsEmptyException{
+    public ParkingLotRecord remove(Integer slot) throws SlotIsEmptyException{
         if(!occupant.containsKey(slot)){
             throw new SlotIsEmptyException(slot);
         }
@@ -49,19 +41,19 @@ public class ParkingLot{
         occupant.remove(slot);
         availableSlot.add(slot);
 
-        return new AllocationResponse(slot, leaving);
+        return new ParkingLotRecord(slot, leaving);
     }
-    public AllocationResponse[] status(){
-        List<AllocationResponse> response = new ArrayList<AllocationResponse>();
+    public ParkingLotRecord[] status(){
+        List<ParkingLotRecord> response = new ArrayList<ParkingLotRecord>();
         for (Map.Entry<Integer, Car> entry : occupant.entrySet()) {
             response.add(
-                new AllocationResponse(entry.getKey(), entry.getValue())
+                new ParkingLotRecord(entry.getKey(), entry.getValue())
             );
         }
-        return response.toArray(new AllocationResponse[response.size()]);
+        return response.toArray(new ParkingLotRecord[response.size()]);
     }
-    public AllocationResponse[] find(String field, String term){
-        List<AllocationResponse> response = new ArrayList<AllocationResponse>();
+    public ParkingLotRecord[] find(String field, String term){
+        List<ParkingLotRecord> response = new ArrayList<ParkingLotRecord>();
         Map<
             String, 
             Validator<Car, String>
@@ -83,11 +75,11 @@ public class ParkingLot{
         for (Map.Entry<Integer, Car> entry : occupant.entrySet()) {
             if(validator.get(field).compare(entry.getValue(), term)){
                 response.add(
-                    new AllocationResponse(entry.getKey(), entry.getValue())
+                    new ParkingLotRecord(entry.getKey(), entry.getValue())
                 );
             }
         }
 
-        return response.toArray(new AllocationResponse[response.size()]);
+        return response.toArray(new ParkingLotRecord[response.size()]);
     }
 }
