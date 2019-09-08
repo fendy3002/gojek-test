@@ -25,7 +25,7 @@ public class InputParser{
         else if(parts[0].equals("park")){
             String registrationNo = parts[1];
             String colour = parts[2];
-            ParkingLotRecord response = this.parkingLot.insert(registrationNo, colour);
+            ParkingLotRecord response = this.parkingLot.add(registrationNo, colour);
             return "Allocated slot number: " + response.getSlot().toString();
         }
         else if(parts[0].equals("leave")){

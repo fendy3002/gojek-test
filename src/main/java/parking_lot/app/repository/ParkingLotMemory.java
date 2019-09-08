@@ -19,10 +19,10 @@ public class ParkingLotMemory{
     public Integer getSlot(){
         return this.slot;
     }
-    public ParkingLotRecord insert(String registrationNo, String colour) throws FullSlotException{
-        return this.insert(new Car(registrationNo, colour));
+    public ParkingLotRecord add(String registrationNo, String colour) throws FullSlotException{
+        return this.add(new Car(registrationNo, colour));
     }
-    public ParkingLotRecord insert(Car car) throws FullSlotException{
+    public ParkingLotRecord add(Car car) throws FullSlotException{
         if(availableSlot.size() > 0){
             Integer assignedSlot = availableSlot.get(0);
             occupant.put(assignedSlot, car);

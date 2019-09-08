@@ -1,6 +1,7 @@
 package parking_lot.app;
 import java.io.*;
-import java.util.Scanner;
+import java.util.*;
+import java.nio.file.*;
 import parking_lot.app.exception.*;
 
 /**
@@ -22,20 +23,31 @@ public class App
     }
     public static void main( String[] args )
     {
-        Scanner sc = new Scanner(System.in);
         InputParser parser = new InputParser();
+        if(args.length == 0){
+            Scanner sc = new Scanner(System.in);
 
-        String input = "";
-        do{
-            input = sc.next();
-            try{
-                System.out.println(parser.parse(input));
-            } catch (FullSlotException ex){
+            String input = "";
+            do{
+                input = sc.nextLine();
+                parseInput(parser, input);
+            }
+            while(!input.equals("exit"));
+        } else {
+            String file = args[0];
+            Path currentPath = Paths.get(System.getProperty("user.dir"));
 
-            } catch (SlotIsEmptyException ex){
-                
+            String fullFilePath = Paths.get(currentPath.toString(), file).toString();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(fullFilePath));
+
+                String line;
+                while ((line = br.readLine()) != null) {
+                    parseInput(parser, line);
+                }
+            } catch(Exception ex){
+                System.out.println("File cannot be read!");
             }
         }
-        while(!input.equals("exit"));
     }
 }
