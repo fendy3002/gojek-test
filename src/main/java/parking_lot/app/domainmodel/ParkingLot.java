@@ -1,6 +1,7 @@
 package parking_lot.app.domainmodel;
 import java.util.*;
 import parking_lot.app.exception.*;
+import parking_lot.app.anon.*;
 
 public class ParkingLot{
     public class AllocationResponse{
@@ -58,7 +59,32 @@ public class ParkingLot{
     }
     public AllocationResponse[] find(String field, String term){
         List<AllocationResponse> response = new ArrayList<AllocationResponse>();
-        
+        Map<
+            String, 
+            Validator<Car, String>
+        > validator = new HashMap<
+            String, 
+            Validator<Car, String>
+        >();
+        validator.put("registration_number", new Validator<Car, String>(){
+            public boolean compare(Car car, String term){
+                return car.getRegistrationNo() == term;
+            }
+        });
+        validator.put("colour", new Validator<Car, String>(){
+            public boolean compare(Car car, String term){
+                return car.getColour() == term;
+            }
+        });
+
+        for (Map.Entry<Integer, Car> entry : occupant.entrySet()) {
+            if(validator.get(field).compare(entry.getValue(), term)){
+                response.add(
+                    new AllocationResponse(entry.getKey(), entry.getValue())
+                );
+            }
+        }
+
         return response.toArray(new AllocationResponse[response.size()]);
     }
 }

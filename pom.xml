@@ -66,7 +66,7 @@
             </execution>
           </executions>
           <configuration>
-            <mainClass>com.mycompany.app.App</mainClass>
+            <mainClass>parking_lot.app.App</mainClass>
             <arguments>
               <argument>foo</argument>
               <argument>bar</argument>
