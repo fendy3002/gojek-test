@@ -2,12 +2,24 @@ package parking_lot.app;
 import parking_lot.app.domainmodel.*;
 import parking_lot.app.repository.*;
 import parking_lot.app.exception.*;
+import parking_lot.app.anon.*;
 import java.util.*;
 
 public class InputParser{
-    private ParkingLotMemory parkingLot;
+    public InputParser(){
+        this(new Builder<IParkingLot, Integer>(){
+            public IParkingLot build(Integer slot){
+                return new ParkingLotMemory(slot);
+            }
+        });
+    }
+    public InputParser(Builder<IParkingLot, Integer> builder){
+        this.parkingLotBuilder = builder;
+    }
+    private IParkingLot parkingLot;
+    private Builder<IParkingLot, Integer> parkingLotBuilder;
     
-    public ParkingLotMemory getParkingLot(){
+    public IParkingLot getParkingLot(){
         return this.parkingLot;
     };
     public String parse(String input) throws FullSlotException, SlotIsEmptyException, LotInitializedException{
@@ -18,7 +30,7 @@ public class InputParser{
                 throw new LotInitializedException();
             }
             Integer slot = Integer.parseInt(parts[1]);
-            this.parkingLot = new ParkingLotMemory(slot);
+            this.parkingLot = this.parkingLotBuilder.build(slot);
 
             return "Created a parking lot with " + slot.toString() + " slots";
         }

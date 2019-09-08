@@ -4,7 +4,7 @@ import parking_lot.app.domainmodel.*;
 import parking_lot.app.exception.*;
 import parking_lot.app.anon.*;
 
-public class ParkingLotMemory{
+public class ParkingLotMemory implements IParkingLot{
     public ParkingLotMemory(Integer slot){
         this.slot = slot;
         for(Integer i = 1; i <= slot; i++){
