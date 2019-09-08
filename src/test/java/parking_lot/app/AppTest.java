@@ -1,4 +1,4 @@
-package com.mycompany.app;
+package parking_lot.app;
 
 import static org.junit.Assert.assertTrue;
 

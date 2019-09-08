@@ -15,7 +15,7 @@ public class App
         } catch (FullSlotException ex){
             System.out.println("Sorry, parking lot is full");
         } catch (SlotIsEmptyException ex){
-            System.out.println("A");
+            System.out.println("Slot is empty");
         }
     }
     public static void main( String[] args )
