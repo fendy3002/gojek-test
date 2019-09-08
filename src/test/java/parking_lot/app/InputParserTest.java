@@ -83,7 +83,13 @@ public class InputParserTest
         assertEquals("Allocated slot number: 6", parser.parse("park KA-01-HH-3141 Black"));
         
         assertEquals("Slot number 4 is free", parser.parse("leave 4"));
-        parser.parse("status");
+        String expectedStatus = "Slot No.\tRegistration No\tColour\n" +
+            "1\tKA-01-HH-1234\tWhite\n" +
+            "2\tKA-01-HH-9999\tWhite\n" +
+            "3\tKA-01-BB-0001\tBlack\n" +
+            "5\tKA-01-HH-2701\tBlue\n" +
+            "6\tKA-01-HH-3141\tBlack";
+        assertEquals(expectedStatus, parser.parse("status"));
         assertEquals("Allocated slot number: 4", parser.parse("park KA-01-P-333 White"));
         exception.expect(parking_lot.app.exception.FullSlotException.class);
         parser.parse("park DL-12-AA-9999 White");
