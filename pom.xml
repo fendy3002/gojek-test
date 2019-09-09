@@ -6,7 +6,7 @@
 
   <groupId>parking_lot.app</groupId>
   <artifactId>parking_lot</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <name>parking_lot</name>
   <!-- FIXME change it to the project's website -->
@@ -123,6 +123,8 @@
                 <mainClass>parking_lot.app.App</mainClass>
               </manifest>
             </archive>
+            <finalName>parking_lot</finalName>
+            <appendAssemblyId>false</appendAssemblyId>
             <descriptorRefs>
               <descriptorRef>jar-with-dependencies</descriptorRef>
             </descriptorRefs>
